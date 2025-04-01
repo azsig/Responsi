@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <div>
+    <h2>Temperature: <%= data.temperature %>°C</h2>
+    <h2>Humidity: <%= data.humidity %>%</h2>
+    <h2>CO2: <%= data.co2 %> ppm</h2>
+    <h2>LPG: <%= data.lpg %> ppm</h2>
+    <h2>Noise: <%= data.noise %> dB</h2>
+  </div>
+  <button onclick="alert('Emergency button clicked!')">Emergency</button>
+</body>
+</html>

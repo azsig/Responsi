@@ -1,0 +1,74 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin-top: 20px;
+  color: #333;
+}
+
+h2 {
+  margin: 10px 0;
+  color: #555;
+}
+
+.content{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  height: 100vh;
+  padding: 0 70px 0 70px;
+}
+
+.box {
+  background-color: #fff;
+  width: 10vw;
+  height: 10vw;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.logo svg {
+  width: 3vw;
+  height: auto;
+}
+/* Mercury Thermometer */
+.thermometer {
+  position: relative;
+  width: 70px;
+  height: 50vh;
+  margin: 20px auto;
+  background: #ddd;
+  border-radius: 25px;
+  overflow: hidden;
+  border: 2px solid #aaa;
+}
+
+.thermometer .mercury {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: green;
+  border-radius: 25px;
+  transition: height 2s ease;
+}
+
+/* Speedometer */
