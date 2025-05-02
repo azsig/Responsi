@@ -1,0 +1,53 @@
+import websocket
+import json
+import time
+import random
+
+# WebSocket server URL
+SERVER_URL = "ws://<SERVER_IP>:3000"
+
+# Simulate sensor readings
+def get_sensor_data():
+    return {
+        "temperature": round(random.uniform(20, 30), 2),
+        "humidity": round(random.uniform(40, 60), 2),
+        "co2": round(random.uniform(300, 500), 2),
+        "lpg": round(random.uniform(0, 50), 2),
+        "noise": round(random.uniform(30, 70), 2),
+    }
+
+# Handle messages from server
+def on_message(ws, message):
+    print("Received command from server:", message)
+    command = json.loads(message)
+
+    # Example: Handle "activate_actuator" command
+    if command.get("command") == "activate_actuator":
+        print("Activating actuator...")
+        # Add code to activate the actuator here
+        time.sleep(1)
+        print("Actuator activated")
+
+# Handle WebSocket connection open
+def on_open(ws):
+    print("Connected to server")
+    def send_sensor_data():
+        while True:
+            data = get_sensor_data()
+            ws.send(json.dumps(data))
+            print("Sent sensor data:", data)
+            time.sleep(1)  # Send data every second
+    send_sensor_data()
+
+# Handle WebSocket connection close
+def on_close(ws, close_status_code, close_msg):
+    print("Disconnected from server")
+
+# Connect to WebSocket server
+ws = websocket.WebSocketApp(
+    SERVER_URL,
+    on_message=on_message,
+    on_open=on_open,
+    on_close=on_close,
+)
+ws.run_forever()

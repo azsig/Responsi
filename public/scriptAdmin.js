@@ -17,7 +17,7 @@ async function fetchLatestData() {
         if (response.ok) {
             const data = await response.json();
 
-            // Update DOM elements dynamically based on their existence
+            // Update DOM elements dynamically based on the fetched data
             const temperatureBox = document.querySelector('#temperature .box');
             if (temperatureBox) temperatureBox.textContent = `${data.temperature}°C`;
 
@@ -33,6 +33,7 @@ async function fetchLatestData() {
             const noiseBox = document.querySelector('#noise .box');
             if (noiseBox) noiseBox.textContent = `${data.noise} dB`;
 
+            console.log('Latest data fetched:', data);
             // Update thermometer and speedometers
             updateThermometer('#temperature', data.temperature, 100); // Max 100°C
             updateThermometer('#humidity', data.humidity, 100); // Max 100%
@@ -40,12 +41,29 @@ async function fetchLatestData() {
             updateThermometer('#lpg', data.lpg, 1000); // Max 1000 ppm
             updateThermometer('#noise', data.noise, 120); // Max 120 dB
 
-            console.log('Latest data fetched:', data);
+            // Notify all clients about the new data
+            await notifyClients();
         } else {
             console.log('Failed to fetch the latest data');
         }
     } catch (error) {
         console.error('Error fetching the latest data:', error);
+    }
+}
+
+// Function to notify clients
+async function notifyClients() {
+    try {
+        const response = await fetch('/api/websocket/notify-clients', {
+            method: 'POST',
+        });
+        if (response.ok) {
+            console.log('Clients notified successfully');
+        } else {
+            console.error('Failed to notify clients');
+        }
+    } catch (error) {
+        console.error('Error notifying clients:', error);
     }
 }
 
