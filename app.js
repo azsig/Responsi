@@ -5,6 +5,8 @@ const path = require('path');
 const db = require('./config/db');
 const { initializeWebSocket, router: websocketRouter } = require('./controllers/websocket');
 const http = require('http');
+const passport = require('passport');
+require('./config/passport')(passport); // Import konfigurasi Passport.js
 
 const app = express();
 const server = http.createServer(app);
@@ -13,7 +15,14 @@ const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use((req, res, next) => {
+    res.locals.error = req.session.error;
+    delete req.session.error; // Hapus pesan setelah ditampilkan
+    next();
+});
 
 // View Engine
 app.set('view engine', 'ejs');

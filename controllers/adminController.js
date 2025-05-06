@@ -1,18 +1,53 @@
+const passport = require('passport');
+const bcrypt = require('bcryptjs');
 const db = require('../config/db');
 const { sendCommandToRaspberryPi, notifyClients } = require('./websocket');
 
+// Render halaman login
 exports.showLogin = (req, res) => {
-  res.render('login');
+    res.render('login');
 };
 
-exports.handleLogin = (req, res) => {
-  const { username, password } = req.body;
-  if (username === 'admin' && password === 'admin') {
-    req.session.isAdmin = true;
-    res.redirect('/admin/dashboard');
-  } else {
-    res.send('Invalid credentials');
-  }
+// Tangani login menggunakan Passport.js
+exports.handleLogin = (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            console.error('Error during authentication:', err);
+            req.session.error = 'Authentication failed';
+            //return res.redirect('/admin/login');
+        }
+        if (!user) {
+            req.session.error = info.message;
+            return res.redirect('/admin/login');
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                console.error('Error during login:', err);
+                req.session.error = 'Login failed';
+                return res.redirect('/admin/login');
+            }
+            req.session.isAdmin = true; // Set session variable to indicate admin login
+            return res.redirect('/admin/dashboard');
+        });
+    })(req, res, next);
+};
+
+// Tambahkan fungsi untuk mendaftarkan user baru (opsional)
+exports.registerUser = async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        // Hash password sebelum menyimpannya ke database
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Simpan user ke database
+        await db.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hashedPassword]);
+        res.send('User registered successfully');
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).send('Error registering user');
+    }
 };
 
 exports.getDataByIndex = async (req, res) => {

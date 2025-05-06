@@ -1,11 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
+const { ensureAuthenticated } = require('../middleware/auth');
 
+// Rute login
 router.get('/login', adminController.showLogin);
 router.post('/login', adminController.handleLogin);
-router.get('/dashboard', adminController.showAdminDashboard);
-router.post('/emergency', adminController.handleEmergency);
-router.get('/data/:index', adminController.getDataByIndex);
+
+// Rute dashboard (hanya untuk user yang sudah login)
+router.get('/dashboard', ensureAuthenticated, adminController.showAdminDashboard);
+
+// Rute untuk mendaftarkan user baru (opsional)
+router.post('/register', adminController.registerUser);
 
 module.exports = router;

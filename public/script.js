@@ -63,23 +63,7 @@ function setupWebSocket() {
         console.log('WebSocket message received:', event.data);
 
         try {
-            const data = JSON.parse(event.data); // Parse data yang diterima dari WebSocket
-
-            // Update DOM elements dynamically based on the received data
-            const temperatureBox = document.querySelector('#temperature .box');
-            if (temperatureBox) temperatureBox.textContent = `${data.temperature}°C`;
-
-            const humidityBox = document.querySelector('#humidity .box');
-            if (humidityBox) humidityBox.textContent = `${data.humidity}%`;
-
-            const co2Box = document.querySelector('#co2 .box');
-            if (co2Box) co2Box.textContent = `${data.co2} ppm`;
-
-            const lpgBox = document.querySelector('#lpg .box');
-            if (lpgBox) lpgBox.textContent = `${data.lpg} ppm`;
-
-            const noiseBox = document.querySelector('#noise .box');
-            if (noiseBox) noiseBox.textContent = `${data.noise} dB`;
+            startPolling(); // Start polling to fetch the latest data
 
             console.log('Dashboard updated with WebSocket data:', data);
         } catch (error) {
