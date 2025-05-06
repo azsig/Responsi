@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const db = require('../config/db');
+
 const express = require('express');
 const router = express.Router();
 
@@ -58,16 +59,32 @@ async function notifyClients() {
             return;
         }
 
-        console.log('Sending latest data to clients:', latestData); // Debugging log
+        console.log('Sending latest data to clients:'); // Debugging log
 
         // Send the latest data to all connected clients
         wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(JSON.stringify(latestData)); // Send the latest data to clients
+                client.send("Update"); // Send the latest data to clients
             }
         });
     } catch (error) {
         console.error('Error fetching or sending data:', error);
+    }
+}
+
+async function sendCommandToRaspberryPi(command) {
+    if (!wss){
+        console.log("Websocket server not initialized")
+    }
+    try{
+        wss.clients.forEach((client) => {
+            if(client.readyState === WebSocket.OPEN){
+                client.send(command);
+            }
+        })
+    }
+    catch (error){
+        console.log('Error activate actuator', error);
     }
 }
 
@@ -84,6 +101,7 @@ router.post('/notify-clients', async (req, res) => {
 
 module.exports = {
     initializeWebSocket,
+    sendCommandToRaspberryPi,
     notifyClients,
     router, // Tambahkan router untuk digunakan di app.js
 };

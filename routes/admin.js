@@ -13,4 +13,6 @@ router.get('/dashboard', ensureAuthenticated, adminController.showAdminDashboard
 // Rute untuk mendaftarkan user baru (opsional)
 router.post('/register', adminController.registerUser);
 
+router.post('/emergency', adminController.handleEmergency);
+
 module.exports = router;

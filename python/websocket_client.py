@@ -15,7 +15,7 @@ def on_message(ws, message):
     global stop_sending
     try:
         print("Received command from server:", message)
-        command = json.loads(message)
+        command = message
         if command.get("command") == "activate_actuator":
             print("Activating actuator...")
             stop_sending = True
