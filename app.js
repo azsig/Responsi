@@ -7,6 +7,7 @@ const { initializeWebSocket, router: websocketRouter } = require('./controllers/
 const http = require('http');
 const passport = require('passport');
 require('./config/passport')(passport); // Import konfigurasi Passport.js
+require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
@@ -44,7 +45,7 @@ app.use('/api/websocket', websocketRouter);
 initializeWebSocket(server);
 
 // Start HTTP server
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

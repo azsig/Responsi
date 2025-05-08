@@ -49,26 +49,35 @@ async function fetchLatestData() {
     }
 }
 
+let pollingIntervalId;
+
 // Function to start polling data every 1 minute
 function startPolling() {
     fetchLatestData(); // Fetch data immediately on page load
-    setInterval(fetchLatestData, 10000); // Fetch data every 60 seconds
+    pollingIntervalId = setInterval(fetchLatestData, 10000); // Fetch data every 60 seconds
 }
 
 // WebSocket for real-time updates
 function setupWebSocket() {
-    const ws = new WebSocket('ws://localhost:3000'); // Ganti dengan URL WebSocket server Anda
+    const ws = new WebSocket('ws://localhost:3000?type=web'); // Ganti dengan URL WebSocket server Anda
 
     ws.onmessage = (event) => {
         console.log('WebSocket message received:', event.data);
 
-        try {
-            startPolling(); // Start polling to fetch the latest data
-
-            console.log('Dashboard updated with WebSocket data:', data);
-        } catch (error) {
-            console.error('Error processing WebSocket message:', error);
+        if(event.data === "update"){
+            try {
+                if(pollingIntervalId){
+                    clearInterval(pollingIntervalId); // Clear the previous interval    
+                    console.log("Polling interval cleared");
+                }
+                fetchLatestData(); // Fetch the latest data immediately
+    
+                console.log('Dashboard updated with WebSocket data:');
+            } catch (error) {
+                console.error('Error processing WebSocket message:', error);
+            }
         }
+        
     };
 
     ws.onopen = () => {

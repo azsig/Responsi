@@ -10,8 +10,19 @@ let wss; // WebSocket server instance
 function initializeWebSocket(server) {
     wss = new WebSocket.Server({ server });
 
-    wss.on('connection', (ws) => {
+    wss.on('connection', (ws, req) => {
+        const params = new URLSearchParams(req.url.split('?')[1]);
+        const clientType = params.get('type'); // Ambil clientId dari query string
         console.log('Client connected via WebSocket');
+
+        if(!clientType){
+            console.log('Connection rejected: No client type provided');
+            ws.close(4001, 'Clinet type not specified');
+            return;
+        }
+
+        ws.clientType = clientType;
+        console.log(`Client connected: ${clientType}`);
 
         ws.on('message', (message) => {
             console.log('Received data from client:', message); // Log data yang diterima
@@ -51,20 +62,19 @@ async function notifyClients() {
 
     try {
         // Fetch the latest data from the database
-        const result = await db.query('SELECT * FROM sensor_data ORDER BY id DESC LIMIT 1');
-        const latestData = result.rows[0];
+        const notif = "update"
 
-        if (!latestData) {
+        if (!notif) {
             console.error('No data found in the database');
             return;
         }
 
-        console.log('Sending latest data to clients:'); // Debugging log
+        console.log('Sending latest data to clients:', notif); // Debugging log
 
         // Send the latest data to all connected clients
         wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send("Update"); // Send the latest data to clients
+            if (client.readyState === WebSocket.OPEN && client.clientType === 'web') {
+                client.send(notif); // Send the latest data to clients
             }
         });
     } catch (error) {
@@ -78,7 +88,7 @@ async function sendCommandToRaspberryPi(command) {
     }
     try{
         wss.clients.forEach((client) => {
-            if(client.readyState === WebSocket.OPEN){
+            if(client.readyState === WebSocket.OPEN && client.clientType === 'raspi'){
                 client.send(command);
             }
         })

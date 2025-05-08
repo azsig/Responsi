@@ -75,7 +75,7 @@ function startPolling() {
 
 // WebSocket for real-time updates
 function setupWebSocket() {
-    const ws = new WebSocket('ws://localhost:3000'); // Ganti dengan URL WebSocket server Anda
+    const ws = new WebSocket('ws://localhost:3000?type=web'); // Ganti dengan URL WebSocket server Anda
 
     
     ws.onopen = () => {
