@@ -1,0 +1,280 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Smart Masjid Dynamic Gauges No Framework</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #d1d5db; /* Tailwind gray-300 */
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #4cff4c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      color: white;
+      font-weight: 600;
+      font-size: 1.125rem; /* text-lg */
+      text-shadow: 0 0 2px black;
+      margin: 0;
+    }
+    .date-time {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .date-time > div {
+      background-color: #3cbf3c;
+      border-radius: 0.375rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.875rem;
+      color: #0b7a0b;
+      text-shadow: 0 0 2px #0b7a0b;
+      user-select: none;
+    }
+    main {
+      max-width: 960px;
+      margin: 1rem auto;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      main {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      main {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .card {
+      background-color: #4cff4c;
+      border-radius: 1rem;
+      box-shadow: 8px 8px 8px rgba(0,0,0,0.3);
+      padding: 1rem;
+      position: relative;
+      max-width: 220px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .card.suhu {
+      max-width: 180px;
+      border-radius: 1.5rem;
+      align-self: center;
+    }
+    .location-time-date {
+      position: absolute;
+      top: 0.25rem;
+      left: 0.25rem;
+      font-size: 0.625rem;
+      color: #b7ffb7;
+      user-select: none;
+    }
+    .border-yellow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px solid #facc15; /* yellow-400 */
+      border-radius: 1rem;
+      pointer-events: none;
+    }
+    .label {
+      font-size: 0.625rem;
+      font-weight: 600;
+      color: black;
+      text-align: center;
+      margin-top: 0.25rem;
+    }
+    .value {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: black;
+      text-align: center;
+    }
+    /* Gauge styles */
+    .gauge {
+      position: relative;
+      width: 150px;
+      height: 80px;
+      margin: 0 auto;
+    }
+    .gauge svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .gauge-arc {
+      fill: none;
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+    .arc-green {
+      stroke: #00b300;
+    }
+    .arc-yellow {
+      stroke: #ffcc33;
+    }
+    .arc-orange {
+      stroke: #ff6600;
+    }
+    .arc-red {
+      stroke: #ff3300;
+    }
+    .needle {
+      transform-origin: 50% 100%;
+      transition: transform 0.5s ease-out;
+      fill: #111;
+    }
+    .gauge-center {
+      fill: #111;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SMART MASJID</h1>
+    <div class="date-time">
+      <div>Jun 10, 2024</div>
+      <div>9:41 AM</div>
+    </div>
+  </header>
+  <main>
+    <!-- Card 1: Kadar CO2 -->
+    <section class="card" aria-label="Kadar CO2 gauge">
+      <div class="location-time-date">Location, Time, Date</div>
+      <div class="gauge" id="gauge-co2" aria-hidden="true">
+        <svg viewBox="0 0 150 70">
+          <path class="gauge-arc arc-green" d="M 20 70 A 50 50 0 0 1 60 20"></path>
+          <path class="gauge-arc arc-yellow" d="M 60 20 A 50 50 0 0 1 90 20"></path>
+          <path class="gauge-arc arc-orange" d="M 90 20 A 50 50 0 0 1 120 40"></path>
+          <path class="gauge-arc arc-red" d="M 120 40 A 50 50 0 0 1 130 70"></path>
+          <circle class="gauge-center" cx="72.5" cy="71" r="6"></circle>
+          <polygon id="needle-co2" class="needle" points="70,70 70,40 75,40 75,70" style="transform: rotate(-40deg);"></polygon>
+        </svg>
+      </div>
+      <div class="label">Kadar CO2</div>
+      <div class="value" id="value-co2">400 ppm</div>
+    </section>
+
+    <!-- Card 2: Kebisingan -->
+    <section class="card" aria-label="Kebisingan gauge">
+        <div class="gauge" id="gauge-noise" aria-hidden="true">
+            <svg viewBox="0 0 150 70">
+              <path class="gauge-arc arc-green" d="M 20 70 A 50 50 0 0 1 60 20"></path>
+              <path class="gauge-arc arc-yellow" d="M 60 20 A 50 50 0 0 1 90 20"></path>
+              <path class="gauge-arc arc-orange" d="M 90 20 A 50 50 0 0 1 120 40"></path>
+              <path class="gauge-arc arc-red" d="M 120 40 A 50 50 0 0 1 130 70"></path>
+              <circle class="gauge-center" cx="72.5" cy="71" r="6"></circle>
+              <polygon id="needle-co2" class="needle" points="70,70 70,40 75,40 75,70" style="transform: rotate(-40deg);"></polygon>
+            </svg>
+          </div>
+      <div class="label">Kebisingan</div>
+      <div class="value" id="value-noise">50 dB</div>
+    </section>
+
+    <!-- Card 3: Suhu -->
+    <section class="card suhu" aria-label="Suhu gauge">
+        <div class="gauge" id="gauge-temp" aria-hidden="true">
+            <svg viewBox="0 0 150 70">
+              <path class="gauge-arc arc-green" d="M 20 70 A 50 50 0 0 1 60 20"></path>
+              <path class="gauge-arc arc-yellow" d="M 60 20 A 50 50 0 0 1 90 20"></path>
+              <path class="gauge-arc arc-orange" d="M 90 20 A 50 50 0 0 1 120 40"></path>
+              <path class="gauge-arc arc-red" d="M 120 40 A 50 50 0 0 1 130 70"></path>
+              <circle class="gauge-center" cx="72.5" cy="71" r="6"></circle>
+              <polygon id="needle-co2" class="needle" points="70,70 70,40 75,40 75,70" style="transform: rotate(-40deg);"></polygon>
+            </svg>
+        </div>
+      <div class="label">Suhu</div>
+      <div class="value" id="value-temp">40 °C</div>
+    </section>
+
+    <!-- Card 4: Kelembapan -->
+    <section class="card" aria-label="Kelembapan gauge">
+        <div class="gauge" id="gauge-humidity" aria-hidden="true">
+            <svg viewBox="0 0 150 70">
+              <path class="gauge-arc arc-green" d="M 20 70 A 50 50 0 0 1 60 20"></path>
+              <path class="gauge-arc arc-yellow" d="M 60 20 A 50 50 0 0 1 90 20"></path>
+              <path class="gauge-arc arc-orange" d="M 90 20 A 50 50 0 0 1 120 40"></path>
+              <path class="gauge-arc arc-red" d="M 120 40 A 50 50 0 0 1 130 70"></path>
+              <circle class="gauge-center" cx="72.5" cy="71" r="6"></circle>
+              <polygon id="needle-co2" class="needle" points="70,70 70,40 75,40 75,70" style="transform: rotate(-40deg);"></polygon>
+            </svg>
+          </div>
+      <div class="label">Kelembapan</div>
+      <div class="value" id="value-humidity">53.41 %</div>
+    </section>
+
+    <!-- Card 5: Kadar LPG -->
+    <section class="card" aria-label="Kadar LPG gauge">
+        <div class="gauge" id="gauge-lpg" aria-hidden="true">
+            <svg viewBox="0 0 150 70">
+              <path class="gauge-arc arc-green" d="M 20 70 A 50 50 0 0 1 60 20"></path>
+              <path class="gauge-arc arc-yellow" d="M 60 20 A 50 50 0 0 1 90 20"></path>
+              <path class="gauge-arc arc-orange" d="M 90 20 A 50 50 0 0 1 120 40"></path>
+              <path class="gauge-arc arc-red" d="M 120 40 A 50 50 0 0 1 130 70"></path>
+              <circle class="gauge-center" cx="72.5" cy="71" r="6"></circle>
+              <polygon id="needle-co2" class="needle" points="70,70 70,40 75,40 75,70" style="transform: rotate(-40deg);"></polygon>
+            </svg>
+          </div>
+      <div class="label">Kadar lpg</div>
+      <div class="value" id="value-lpg">30 ppm</div>
+    </section>
+  </main>
+
+  <script>
+    // Gauge configuration: min, max, unit, needle element id, value element id
+    const gauges = {
+      co2: { min: 0, max: 1000, unit: 'ppm', needleId: 'needle-co2', valueId: 'value-co2' },
+      noise: { min: 0, max: 120, unit: 'dB', needleId: 'needle-noise', valueId: 'value-noise' },
+      temp: { min: 0, max: 50, unit: '°C', needleId: 'needle-temp', valueId: 'value-temp' },
+      humidity: { min: 0, max: 100, unit: '%', needleId: 'needle-humidity', valueId: 'value-humidity' },
+      lpg: { min: 0, max: 100, unit: 'ppm', needleId: 'needle-lpg', valueId: 'value-lpg' }
+    };
+
+    // Convert value to angle between -90deg and +90deg
+    function valueToAngle(value, min, max) {
+      if (value < min) value = min;
+      if (value > max) value = max;
+      const ratio = (value - min) / (max - min);
+      return ratio * 180 - 90;
+    }
+
+    // Update gauge needle and value text
+    function updateGauge(gaugeKey, value) {
+      const gauge = gauges[gaugeKey];
+      if (!gauge) return;
+      const angle = valueToAngle(value, gauge.min, gauge.max);
+      const needle = document.getElementById(gauge.needleId);
+      const valueText = document.getElementById(gauge.valueId);
+      if (needle) {
+        needle.style.transform = `rotate(${angle}deg)`;
+      }
+      if (valueText) {
+        valueText.textContent = `${value} ${gauge.unit}`;
+      }
+    }
+
+    // Initialize gauges with default values
+    updateGauge('co2', 400);
+    updateGauge('noise', 50);
+    updateGauge('temp', 40);
+    updateGauge('humidity', 53.41);
+    updateGauge('lpg', 30);
+
+    // Example dynamic update (uncomment to test)
+    // setTimeout(() => updateGauge('co2', 700), 2000);
+  </script>
+</body>
+</html>
