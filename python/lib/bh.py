@@ -1,6 +1,7 @@
 import smbus
 import time
-import RPi.GPIO as GPIO
+import aktuator
+
 
 # Alamat I2C BH1750
 DEVICE = 0x23
@@ -10,10 +11,7 @@ CONTINUOUS_HIGH_RES_MODE = 0x10
 bus = smbus.SMBus(1)
 
 # Setup GPIO
-RELAY_PIN = 16  # Ganti dengan pin GPIO yang kamu pakai
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(RELAY_PIN, GPIO.OUT)
-GPIO.output(RELAY_PIN, GPIO.HIGH)  # Relay OFF awalnya (asumsi active low)
+
 
 # Fungsi untuk membaca lux
 def read_light(addr=DEVICE):
@@ -22,22 +20,23 @@ def read_light(addr=DEVICE):
     lux = result / 1.2
     return lux
 
-try:
-    while True:
-        light_level = read_light()
-        print(f"Cahaya: {light_level:.2f} lux")
+def lightLogic(light):
+    try:
+        while True:
+            light_level = light
+            print(f"Cahaya: {light_level:.2f} lux")
 
-        if light_level < 300:
-            print("Lux < 300 → Relay ON")
-            GPIO.output(RELAY_PIN, GPIO.LOW)  # Relay ON (asumsi active low)
-        else:
-            print("Lux ≥ 300 → Relay OFF")
-            GPIO.output(RELAY_PIN, GPIO.HIGH)  # Relay OFF
+            if light_level < 300:
+                print("Lux < 300 → Relay ON") # Relay ON
+                aktuator.buzzer_on()
+            else:
+                print("Lux ≥ 300 → Relay OFF")
+                aktuator.buzzer_off()  # Relay OFF
 
-        time.sleep(1)
+            time.sleep(1)
 
-except KeyboardInterrupt:
-    print("Program dihentikan")
+    except KeyboardInterrupt:
+        print("Program dihentikan")
 
-finally:
-    GPIO.cleanup()
+
+

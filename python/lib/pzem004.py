@@ -36,6 +36,11 @@ def read_pzem_data():
                 print(f"Power: {power * 0.1} W")
 
                 # Delay sebelum pembacaan berikutnya
+                return {
+                    voltage: voltage,
+                    current: current * 0.001,   # Mengonversi ke Ampere
+                    power: power * 0.1          # Mengonversi ke Watt  
+                }
                 time.sleep(1)
 
             except minimalmodbus.IllegalRequestError as e:
@@ -48,5 +53,4 @@ def read_pzem_data():
         instrument.serial.close()
         print("Koneksi ke perangkat ditutup.")
 
-if __name__ == "__main__":
-    read_pzem_data()
+

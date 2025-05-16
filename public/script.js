@@ -33,12 +33,20 @@ async function fetchLatestData() {
             const noiseBox = document.querySelector('#noise .text');
             if (noiseBox) noiseBox.textContent = `${data.noise} dB`;
 
+            const lightBox = document.querySelector('#light .text');
+            if (lightBox) lightBox.textContent = `${data.light} lux`;
+
+            const powerBox = document.querySelector('#power .text');
+            if (powerBox) powerBox.textContent = `${data.power} W`;
+
             // Update thermometer and speedometers
             updateThermometer('#temperature', data.temperature, 100); // Max 100°C
             updateThermometer('#humidity', data.humidity, 100); // Max 100%
             updateThermometer('#co2', data.co2, 1000); // Max 1000 ppm
             updateThermometer('#lpg', data.lpg, 1000); // Max 1000 ppm
             updateThermometer('#noise', data.noise, 120); // Max 120 dB
+            updateThermometer('#light', data.light, 1000); // Max 1000 lux
+            updateThermometer('#power', data.power, 1000); // Max 1000 W
 
             console.log('Latest data fetched:', data);
         } else {

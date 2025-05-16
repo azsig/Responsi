@@ -32,8 +32,8 @@ function initializeWebSocket(server) {
 
                 // Simpan data ke database
                 db.query(
-                    'INSERT INTO sensor_data (temperature, humidity, co2, lpg, noise, light) VALUES ($1, $2, $3, $4, $5)',
-                    [data.temperature, data.humidity, data.co2, data.lpg, data.noise, data.light],
+                    'INSERT INTO sensor_data (temperature, humidity, co2, lpg, noise, light, voltage, current, power) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+                    [data.temperature, data.humidity, data.co2, data.lpg, data.noise, data.light, data.voltage, data.current, data.power],
                     (err) => {
                         if (err) {
                             console.error('Error saving data to database:', err);
