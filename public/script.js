@@ -2,11 +2,10 @@ console.log('Data received in script.js:', userData);
 
 // Function to update the thermometer
 function updateThermometer(selector, temperature, max = 100, threshold = 50) {
-    const mercury = document.querySelector(selector + " " + '.mercury');
-    if (mercury) {
+    const gauge = document.querySelector(selector + " " + '.gauge-marker');
+    if (gauge) {
         const height = Math.min((temperature / max) * 100, 100); // Calculate height percentage
-        mercury.style.width = `${height}%`;
-        mercury.style.backgroundColor = height > threshold ? 'rgba(255, 0, 0, 0.3)' : 'rgba(0, 128, 0, 0.3)';
+        gauge.style.left = `${height}%`;
     }
 }
 
@@ -18,27 +17,36 @@ async function fetchLatestData() {
             const data = await response.json();
 
             // Update DOM elements dynamically based on their existence
-            const temperatureBox = document.querySelector('#temperature .text');
+            const temperatureBox = document.querySelector('#temperature .gauge-value');
             if (temperatureBox) temperatureBox.textContent = `${data.temperature}°C`;
 
-            const humidityBox = document.querySelector('#humidity .text');
+            const humidityBox = document.querySelector('#humidity .gauge-value');
             if (humidityBox) humidityBox.textContent = `${data.humidity}%`;
 
-            const co2Box = document.querySelector('#co2 .text');
+            const co2Box = document.querySelector('#co2 .gauge-value');
             if (co2Box) co2Box.textContent = `${data.co2} ppm`;
 
-            const lpgBox = document.querySelector('#lpg .text');
+            const lpgBox = document.querySelector('#lpg .gauge-value');
             if (lpgBox) lpgBox.textContent = `${data.lpg} ppm`;
 
-            const noiseBox = document.querySelector('#noise .text');
+            const noiseBox = document.querySelector('#noise .gauge-value');
             if (noiseBox) noiseBox.textContent = `${data.noise} dB`;
 
-            const lightBox = document.querySelector('#light .text');
+            const lightBox = document.querySelector('#light .gauge-value');
             if (lightBox) lightBox.textContent = `${data.light} lux`;
 
-            const powerBox = document.querySelector('#power .text');
+            const powerBox = document.querySelector('#power .power .gauge-value');
             if (powerBox) powerBox.textContent = `${data.power} W`;
 
+            const currentBox = document.querySelector('#power .current .gauge-value');
+            if (currentBox) currentBox.textContent = `${data.current} A`;
+
+            const voltageBox = document.querySelector('#power .voltage .gauge-value');
+            if (voltageBox) voltageBox.textContent = `${data.voltage} V`;
+
+            const peopleBox = document.querySelector('#people .gauge-value');
+            if (peopleBox) peopleBox.textContent = `0 Orang`
+ 
             // Update thermometer and speedometers
             updateThermometer('#temperature', data.temperature, 100); // Max 100°C
             updateThermometer('#humidity', data.humidity, 100); // Max 100%
@@ -46,7 +54,6 @@ async function fetchLatestData() {
             updateThermometer('#lpg', data.lpg, 1000); // Max 1000 ppm
             updateThermometer('#noise', data.noise, 120); // Max 120 dB
             updateThermometer('#light', data.light, 1000); // Max 1000 lux
-            updateThermometer('#power', data.power, 1000); // Max 1000 W
 
             console.log('Latest data fetched:', data);
         } else {

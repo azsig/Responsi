@@ -1,12 +1,52 @@
 console.log('Data received in script.js:', userData);
 
+let on = 0
+const actuatorForm = document.getElementById('actuatorForm');
+const linkBox = actuatorForm.querySelector('button')
+actuatorForm.addEventListener('submit', async (event) => {
+    event.preventDefault(); // Mencegah halaman dimuat ulang
+    let command;
+    if(on == 0){
+        on = 1;
+        linkBox.style.backgroundColor = "rgba(255, 0, 0, 0.712)";
+        command = actuatorForm.querySelector('button').value + '1';
+    }
+    else{
+        on = 0;
+        linkBox.style.backgroundColor = "rgba(255, 0, 0, 0.514)";
+        command = actuatorForm.querySelector('button').value + '0';
+    }
+      // Ambil nilai command langsung dari elemen form
+    
+
+    console.log('Command to send:', command); // Debug log untuk memastikan command tidak kosong
+
+    try {
+        const response = await fetch('/admin/emergency', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command }), // Kirim command ke server
+        });
+
+        if (response.ok) {
+          console.log('Command sent successfully');
+        } else {
+          console.error('Failed to send command');
+          alert('Failed to send command');
+        }
+    } catch (error) {
+        console.error('Error sending command:', error);
+        alert('Error sending command');
+    }
+});
+
+
 // Function to update the thermometer
-function updateThermometer(selector, temperature, max = 100, treshold = 50) {
-    const mercury = document.querySelector(selector + " " + '.mercury');
-    if (mercury) {
+function updateThermometer(selector, temperature, max = 100, threshold = 50) {
+    const gauge = document.querySelector(selector + " " + '.gauge-marker');
+    if (gauge) {
         const height = Math.min((temperature / max) * 100, 100); // Calculate height percentage
-        mercury.style.width = `${height}%`;
-        mercury.style.backgroundColor = height > treshold ? 'rgba(255, 0, 0, 0.3)' : 'rgba(0, 128, 0, 0.3)';
+        gauge.style.left = `${height}%`;
     }
 }
 
@@ -18,20 +58,35 @@ async function fetchLatestData() {
             const data = await response.json();
 
             // Update DOM elements dynamically based on the fetched data
-            const temperatureBox = document.querySelector('#temperature .text');
+            const temperatureBox = document.querySelector('#temperature .gauge-value');
             if (temperatureBox) temperatureBox.textContent = `${data.temperature}°C`;
 
-            const humidityBox = document.querySelector('#humidity .text');
+            const humidityBox = document.querySelector('#humidity .gauge-value');
             if (humidityBox) humidityBox.textContent = `${data.humidity}%`;
 
-            const co2Box = document.querySelector('#co2 .text');
+            const co2Box = document.querySelector('#co2 .gauge-value');
             if (co2Box) co2Box.textContent = `${data.co2} ppm`;
 
-            const lpgBox = document.querySelector('#lpg .text');
+            const lpgBox = document.querySelector('#lpg .gauge-value');
             if (lpgBox) lpgBox.textContent = `${data.lpg} ppm`;
 
-            const noiseBox = document.querySelector('#noise .text');
+            const noiseBox = document.querySelector('#noise .gauge-value');
             if (noiseBox) noiseBox.textContent = `${data.noise} dB`;
+
+            const lightBox = document.querySelector('#light .gauge-value');
+            if (lightBox) lightBox.textContent = `${data.light} lux`;
+
+            const powerBox = document.querySelector('#power .power');
+            if (powerBox) powerBox.textContent = `${data.power} W`;
+
+            const currentBox = document.querySelector('#power .current');
+            if (currentBox) currentBox.textContent = `${data.current} A`;
+
+            const voltageBox = document.querySelector('#power .voltage');
+            if (voltageBox) voltageBox.textContent = `${data.voltage} V`;
+
+            const peopleBox = document.querySelector('#people .gauge-value');
+            if (peopleBox) peopleBox.textContent = `0 Orang`
 
             console.log('Latest data fetched:', data);
             // Update thermometer and speedometers
@@ -40,6 +95,7 @@ async function fetchLatestData() {
             updateThermometer('#co2', data.co2, 1000); // Max 1000 ppm
             updateThermometer('#lpg', data.lpg, 1000); // Max 1000 ppm
             updateThermometer('#noise', data.noise, 120); // Max 120 dB
+            updateThermometer('#light', data.light, 1000);
 
             // Notify all clients about the new data
             await notifyClients();

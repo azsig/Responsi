@@ -16,55 +16,124 @@
     </div>
   </header>
   <section class="content">
-      <div class="box" id="temperature">
-        <div class="ket">
-          <h2>Suhu</h2>
-          <div class="text"><%= data.temperature %>°C</div>
+    <div class="box" id="temperature">
+      <div class="gauge-container">
+        <div class="gauge-title">Temperature </div>
+        <div class="gauge">
+            <div class="gauge-marker"></div>
         </div>
-        <div class="mercury"></div>
-      </div>
-      <div class="box" id="humidity">
-        <div class="ket">
-          <h2>Kelembaban</h2>
-          <div class="text"><%= data.humidity %>°C</div>
+        <div class="gauge-labels">
+            <span>0 °C</span>
+            <span>25 °C</span>
+            <span>50 °C</span>
+            <span>75 °C</span>
+            <span>100 °C</span>
         </div>
-        <div class="mercury"></div>
+        <div class="gauge-value"><%= data.temperature %> <span class="gauge-unit">°C</span></div>
       </div>
-      <div class="box" id="co2">
-        <div class="ket">
-          <h2>Kadar CO₂</h2>
-          <div class="text"><%= data.co2 %>°C</div>
+    </div>
+    <div class="box" id="humidity">
+      <div class="gauge-container">
+        <div class="gauge-title">Humidity </div>
+        <div class="gauge">
+            <div class="gauge-marker"></div>
         </div>
-        <div class="mercury"></div>
-      </div>
-      <div class="box" id="lpg">
-        <div class="ket">
-          <h2>Kadar LPG</h2>
-          <div class="text"><%= data.lpg %>°C</div>
+        <div class="gauge-labels">
+            <span>0 %</span>
+            <span>25 %</span>
+            <span>50 %</span>
+            <span>75 %</span>
+            <span>100 %</span>
         </div>
-        <div class="mercury"></div>
+        <div class="gauge-value"><%= data.humidity %> <span class="gauge-unit">%</span></div>
       </div>
-      <div class="box" id="noise">
-        <div class="ket">
-          <h2>Kebisingan</h2>
-          <div class="text"><%= data.noise %>°C</div>
+    </div>
+ 
+    <div class="box" id="co2">
+      <div class="gauge-container">
+        <div class="gauge-title">Kadar CO₂ </div>
+        <div class="gauge">
+            <div class="gauge-marker"></div>
         </div>
-        <div class="mercury"></div>
-      </div>
-      <div class="box" id="light">
-        <div class="ket">
-          <h2>Cahaya</h2>
-          <div class="text"><%= data.light %>°C</div>
+        <div class="gauge-labels">
+            <span>0 ppm</span>
+            <span>250 ppm</span>
+            <span>500 ppm</span>
+            <span>750 ppm</span>
+            <span>1000 ppm</span>
         </div>
-        <div class="mercury"></div>
+        <div class="gauge-value"><%= data.co2 %> <span class="gauge-unit">ppm</span></div>
       </div>
-      <div class="box" id="power">
-        <div class="ket">
-          <h2>Daya</h2>
-          <div class="text"><%= data.power %>°C</div>
+    </div>
+    <div class="box" id="lpg">
+      <div class="gauge-container">
+        <div class="gauge-title">Kadar Gas LPG </div>
+        <div class="gauge">
+            <div class="gauge-marker"></div>
         </div>
-        <div class="mercury"></div>
+        <div class="gauge-labels">
+            <span>0 ppm</span>
+            <span>250 ppm</span>
+            <span>500 ppm</span>
+            <span>750 ppm</span>
+            <span>1000 ppm</span>
+        </div>
+        <div class="gauge-value"><%= data.lpg %> <span class="gauge-unit">ppm</span></div>
       </div>
+    </div>
+    <div class="box" id="noise">
+      <div class="gauge-container">
+        <div class="gauge-title">Kebisingan </div>
+        <div class="gauge">
+            <div class="gauge-marker"></div>
+        </div>
+        <div class="gauge-labels">
+            <span>0 dB</span>
+            <span>30 dB</span>
+            <span>60 dB</span>
+            <span>90 dB</span>
+            <span>120 dB</span>
+        </div>
+        <div class="gauge-value"><%= data.noise %> <span class="gauge-unit">dB</span></div>
+      </div>
+    </div>
+    <div class="box" id="light">
+      <div class="gauge-container">
+        <div class="gauge-title">Pencahayaan </div>
+        <div class="gauge">
+            <div class="gauge-marker"></div>
+        </div>
+        <div class="gauge-labels">
+            <span>0 dB</span>
+            <span>250 lux</span>
+            <span>500 lux</span>
+            <span>750 lux</span>
+            <span>1000 lux</span>
+        </div>
+        <div class="gauge-value"><%= data.light %> <span class="gauge-unit">lux</span></div>
+      </div>
+    </div>
+    <div class="box Daya" id="power">
+      <div class="gauge-container">
+        <div class="gauge-title">Daya </div>
+        <div class="gauge-value"><%= data.power %> <span class="gauge-unit">W</span></div>
+      </div>
+      <div class="gauge-container">
+        <div class="gauge-title">Arus </div>
+        <div class="gauge-value"><%= data.current %> <span class="gauge-unit">A</span></div>
+      </div>
+      <div class="gauge-container">
+        <div class="gauge-title">Tegangan </div>
+        <div class="gauge-value"><%= data.voltage %> <span class="gauge-unit">V</span></div>
+      </div>
+    </div>
+        <div class="box" id="people">
+      <div class="gauge-container">
+        <div class="gauge-title">Jumlah Orang </div>
+        <div class="gauge-value">0 <span class="gauge-unit">orang</span></div>
+      </div>
+    </div>
+    </div>
   </section>
   <div class="link">
   <a class="linkBox" href="/">HomePage</a>
@@ -74,36 +143,6 @@
   </div>
   
 
-  <script>
-    const actuatorForm = document.getElementById('actuatorForm');
-    actuatorForm.addEventListener('submit', async (event) => {
-      event.preventDefault(); // Mencegah halaman dimuat ulang
-
-      // Ambil nilai command langsung dari elemen form
-      const command = actuatorForm.querySelector('button').value;
-
-      console.log('Command to send:', command); // Debug log untuk memastikan command tidak kosong
-
-      try {
-        const response = await fetch('/admin/emergency', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ command }), // Kirim command ke server
-        });
-
-        if (response.ok) {
-          console.log('Command sent successfully');
-          alert('Command sent to Raspberry Pi!');
-        } else {
-          console.error('Failed to send command');
-          alert('Failed to send command');
-        }
-      } catch (error) {
-        console.error('Error sending command:', error);
-        alert('Error sending command');
-      }
-    });
-  </script>
   <script>
     const userData = <%- JSON.stringify(data) %>; // Convert data to JSON
     console.log(userData);
