@@ -3,6 +3,7 @@ from lib import mhzresponsi
 from lib import modbusgacor
 from lib import sht20
 from lib import pzem004
+from lib import pir
 
 # Simulate sensor readings
 def get_sensor_data():
@@ -15,8 +16,9 @@ def get_sensor_data():
         "co2": mhzresponsi.read_co2_pwm(),
         "lpg": a1,
         "noise": a0,
-        "light": bh.read_light(),
+        "light": bh.read_inLight(),
         "voltage": voltage,
         "current": current,
-        "power": power
+        "power": power,
+        "people": pir.data(), 
     }

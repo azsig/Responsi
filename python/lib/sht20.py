@@ -41,6 +41,7 @@ def read_sht20():
         return None, None
 
 def kebakaranLogic():
+    servo_po = None
     try:
 
         while True:
@@ -51,15 +52,17 @@ def kebakaranLogic():
                 print("-" * 30)
 
                 # Cek suhu dan kontrol servo + buzzer
-                if temp >= 35.0:
-                    aktuator.move_pintu(180)  # Gerakkan servo ke 180 derajat
-                    aktuator.move_jendela(180)  # Gerakkan servo ke 180 derajat
+                if temp >= 50.0 and servo_po != 180:
+                    aktuator.pintu_buka()  # Gerakkan servo ke 180 derajat
+                    aktuator.move_jendela(15)  # Gerakkan servo ke 180 derajat
                     aktuator.buzzer_on()
+                    servo_po = 180
                     print("🔥 Suhu tinggi! Pintu dan jendela terbuka, buzzer menyala.")
-                else:
-                    aktuator.move_pintu(0)
-                    aktuator.move_jendela(0)
+                elif temp <= 35.0 and servo_po !=0:
+                    aktuator.pintu_tutup()
+                    aktuator.move_jendela(85)
                     aktuator.buzzer_off()
+                    servo_po = 0
                     print("Suhu normal. Pintu dan jendela tertutup, buzzer mati.")
 
             time.sleep(2)  # delay 2 detik sebelum baca lagi

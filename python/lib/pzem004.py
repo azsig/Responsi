@@ -6,7 +6,7 @@ from datetime import datetime
 DEVICE_ADDRESS = 0x01
 BAUD_RATE = 9600
 TIMEOUT = 1
-PORT = '/dev/ttyUSB0'
+PORT = '/dev/ttyUSB1'
 
 def read_pzem_data():
     # Initialize the connection to the PZEM device

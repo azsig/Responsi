@@ -11,7 +11,7 @@ import aktuator
 # Servo PWM 50Hz
 
 # --- Modbus Setup ---
-instrument = minimalmodbus.Instrument('/dev/ttyUSB1', 10)
+instrument = minimalmodbus.Instrument('/dev/ttyUSB0', 10)
 instrument.serial.baudrate = 19200
 instrument.serial.bytesize = 8
 instrument.serial.parity   = serial.PARITY_NONE
@@ -33,23 +33,30 @@ def read():
         return analog1, analog0
     except minimalmodbus.NoResponseError:
         print("⚠️  Tidak ada respon dari Arduino. Cek koneksi.")
-lastState = None
+
 def modbusLogic():
+    lastState = "close"
     try:
         while True:
             try:
-                analog1 = instrumen.read_register(3,0)  # A1 di register ke-3
+                analog1 = instrument.read_register(3,0)  # A1 di register ke-3
                 print(f"A1: {analog1}", end="\r")
 
-                if analog1 > 200:
+                if analog1 > 100:
                     if lastState != "open":
-                        aktuator.move_jendela(180)  # Gerakkan servo ke 180 derajat
+                        print('test')
+                        aktuator.pintu_buka()
+                        aktuator.move_jendela(15)  # Gerakkan servo ke 180 derajat
                         window_open = True
+                        lastState = "open"
 
                 else:
                     if lastState != "close":
-                        aktuator.move_jendela(0)  # Gerakkan servo ke 0 derajat
+                        print('test2')
+                        aktuator.pintu_tutup()
+                        aktuator.move_jendela(85)  # Gerakkan servo ke 0 derajat
                         window_open = False
+                        lastState = "close"
 
             except Exception as e:
                 print("❌ Error:", e)

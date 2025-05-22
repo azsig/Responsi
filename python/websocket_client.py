@@ -2,6 +2,7 @@ import websocket
 import json
 import threading
 import time
+import overide
 from sensor import get_sensor_data
 from config import SERVER_URL
 
@@ -16,12 +17,16 @@ def on_message(ws, message):
     try:
         print("Received command from server:", message)
         command = message
-        if command.get("command") == "activate_actuator":
+        if command == "activate_actuator1":
             print("Activating actuator...")
-            stop_sending = True
-            time.sleep(1)
+            threading.Thread(overide.runOveride(15, 1)).start()
+            #stop_sending = True
+            #time.sleep(1)
             print("Actuator activated")
-            stop_sending = False
+            #stop_sending = False
+        else:
+            print("Deactivating Actuator")
+            threading.Thread(overide.runOveride(85, 0)).start()
     except json.JSONDecodeError:
         print("Error decoding message")
     except Exception as e:
@@ -32,7 +37,7 @@ def on_open(ws):
     print("Connected to server")
 
     # Run send_sensor_data in a separate thread
-    threading.Thread(target=send_sensor_data, args=(ws,), daemon=True).start()
+    threading.Thread(target=send_sensor_data, args=(ws,)).start()
 
 # Send sensor data to server
 def send_sensor_data(ws):
@@ -47,7 +52,7 @@ def send_sensor_data(ws):
                     last_sent_data = data
         except Exception as e:
             print(f"Error sending data: {e}")
-        time.sleep(5)
+        time.sleep(0.5)
 
 # Handle WebSocket connection close
 def on_close(ws, close_status_code, close_msg):

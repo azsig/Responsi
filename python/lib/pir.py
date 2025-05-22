@@ -3,12 +3,14 @@ import time
 import aktuator
 
 # Setup GPIO
-PIR_IN_PIN = 23
-PIR_OUT_PIN = 22
+PIR_IN_PIN = 22
+PIR_OUT_PIN = 23
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(PIR_IN_PIN, GPIO.IN)
-GPIO.setup(PIR_OUT_PIN, GPIO.IN)
+
+def Setup():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PIR_IN_PIN, GPIO.IN)
+    GPIO.setup(PIR_OUT_PIN, GPIO.IN)
 
 # Variabel untuk menghitung jumlah orang di dalam ruangan
 jumlah_orang = 0
@@ -39,22 +41,22 @@ def check_pir():
 
         if pir_out_state == GPIO.HIGH:
             print("Gerakan di luar terdeteksi - Membuka pintu")
-            aktuator.move_pintu(90)  # Servo buka pintu
+            aktuator.pintu_buka()  # Servo buka pintu
             time.sleep(1)   # Memberi waktu untuk servo bergerak
             wait_for_motion(PIR_IN_PIN)  # Tunggu gerakan di dalam
             print("Orang masuk - Menutup pintu")
-            aktuator.move_pintu(0)  # Servo tutup pintu
+            aktuator.pintu_tutup()  # Servo tutup pintu
             time.sleep(1)  # Memberi waktu untuk servo menutup pintu
             jumlah_orang += 1  # Tambah jumlah orang yang ada di dalam ruangan
             print(f"Jumlah orang dalam ruangan: {jumlah_orang}")
 
         elif pir_in_state == GPIO.HIGH:
             print("Gerakan di dalam terdeteksi - Membuka pintu")
-            aktuator.move_pintu(90)  # Servo buka pintu
+            aktuator.pintu_buka()  # Servo buka pintu
             time.sleep(1)   # Memberi waktu untuk servo bergerak
             wait_for_motion(PIR_OUT_PIN)  # Tunggu gerakan di luar
             print("Orang keluar - Menutup pintu")
-            aktuator.move_pintu(0)  # Servo tutup pintu
+            aktuator.pintu_tutup()  # Servo tutup pintu
             time.sleep(1)  # Memberi waktu untuk servo menutup pintu
             jumlah_orang -= 1  # Kurangi jumlah orang yang ada di dalam ruangan
             print(f"Jumlah orang dalam ruangan: {jumlah_orang}")
@@ -65,11 +67,11 @@ def pintuLogic():
     try:
         # Pastikan pintu tertutup saat program pertama kali dijalankan
         print("Sistem Pintu Otomatis Dimulai...")
-        aktuator.move_pintu(0)  # Pintu tertutup pada awal program
+        aktuator.pintu_tutup()  # Pintu tertutup pada awal program
         check_pir()
 
     except KeyboardInterrupt:
         print("Program dihentikan oleh pengguna.")
 
-    finally:
-        GPIO.cleanup()  # Membersihkan GPIO untuk menghindari konflik pin
+def data():
+    return jumlah_orang

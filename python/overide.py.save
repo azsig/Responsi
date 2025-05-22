@@ -1,0 +1,15 @@
+import aktuator
+import time
+
+
+def runOveride():
+   
+ try:
+        aktuator.move_jendela(90)
+        time.sleep(0.5)
+        aktuator.move_jendela(180)
+        time.sleep(0.5)
+        aktuator.move_jendela(0)
+    except:
+        print("error")
+    
