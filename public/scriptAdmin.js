@@ -86,7 +86,7 @@ async function fetchLatestData() {
             if (voltageBox) voltageBox.textContent = `${data.voltage} V`;
 
             const peopleBox = document.querySelector('#people .gauge-value');
-            if (peopleBox) peopleBox.textContent = `0 Orang`
+            if (peopleBox) peopleBox.textContent = `${data.people} Orang`
 
             console.log('Latest data fetched:', data);
             // Update thermometer and speedometers
